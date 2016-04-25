@@ -22,7 +22,7 @@ object AlgebirdBuild extends Build {
 
   val sharedSettings = Project.defaultSettings ++ scalariformSettings ++  Seq(
     organization := "com.twitter",
-    scalaVersion := "2.10.5",
+    scalaVersion := "2.11.7",
     crossScalaVersions := Seq("2.10.5", "2.11.7"),
     ScalariformKeys.preferences := formattingPreferences,
 
@@ -190,5 +190,3 @@ object AlgebirdBuild extends Build {
     libraryDependencies += "org.apache.spark" %% "spark-core" % "1.3.0" % "provided"
   ).dependsOn(algebirdCore, algebirdTest % "test->test")
 }
-
-
