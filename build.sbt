@@ -16,6 +16,7 @@ val scalaTestVersion = "3.0.1"
 val scalacheckVersion = "1.13.4"
 val utilVersion = "6.20.0"
 val utilVersion212 = "6.39.0"
+val scroogeVersion = "4.12.0"
 
 def scalaBinaryVersion(scalaVersion: String) = scalaVersion match {
   case version if version startsWith "2.10" => "2.10"
@@ -49,7 +50,7 @@ def docsSourcesAndProjects(sv: String): (Boolean, Seq[ProjectReference]) =
 
 val sharedSettings = scalariformSettings ++  Seq(
   organization := "com.twitter",
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.11.8",
   crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.1"),
   ScalariformKeys.preferences := formattingPreferences,
 
@@ -184,7 +185,8 @@ lazy val algebird = Project(
   algebirdUtil,
   algebirdBijection,
   algebirdBenchmark,
-  algebirdSpark
+  algebirdSpark,
+  algebirdThrift
 )
 
 def module(name: String) = {
@@ -254,6 +256,16 @@ lazy val algebirdSpark = module("spark").settings(
     libraryDependencies += "org.apache.spark" %% "spark-core" % "1.3.0" % "provided",
     crossScalaVersions := crossScalaVersions.value.filterNot(_.startsWith("2.12"))
   ).dependsOn(algebirdCore, algebirdTest % "test->test")
+
+lazy val algebirdThrift = module("thrift")
+   .settings(
+     scroogeLanguages := Seq("java", "scala"),
+     libraryDependencies ++= Seq(
+       "com.twitter" %% "scrooge-serializer" % scroogeVersion % "provided"
+         exclude("com.google.guava", "guava"),
+       "org.apache.thrift" % "libthrift" % "0.5.0"
+     )
+)
 
 lazy val docsMappingsAPIDir = settingKey[String]("Name of subdirectory in site target directory for api docs")
 
